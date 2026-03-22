@@ -1,0 +1,195 @@
+# projeto banco
+#DICIONARIO
+usuarios = {
+    '1982': {
+        'nome':'Nicolas Leandro',
+        'senha':'kaalanie123',
+        'saldo':1000.0,
+        'historico':[]}
+        ,
+    '1408':{
+        'nome':'Kaalanie Porto',
+        'senha':'1408',
+        'saldo':12000.0,
+        'historico':[]},
+
+    '2512':{
+        'nome':'Margarida Deise',
+        'senha':'0704',
+        'saldo':1200.0,
+        'historico':[]}
+}     
+#VÁRIAVEIS 
+#LISTAS
+historico = [
+]
+###FUNCAO CABEÇALHO BOA IDEIA ('==================')
+#FUNÇÕES
+def extrato(conta_usuario):
+     print('======== INICIANDO OPERAÇÃO DE DEPOSITO ========')
+     print('\n')
+     if len(usuarios[conta_usuario]['historico']) == 0:
+      print('Nenhuma movimentação!')
+     else: #usei o enumerate aqui basicamente ele numera cada coisa dentro de uma lista usando o for quando nao sabemos ou sabemos
+          for numero, item in enumerate(usuarios[conta_usuario]['historico'], start=1):
+           print(f'{numero:02d} - {item}')
+def reg_historico(conta_ativa, mensagem):
+     usuarios[conta_ativa]['historico'].append(mensagem)
+def deposito(conta_usuario):
+     saldo_atual = usuarios[conta_usuario]['saldo']
+     print('======== INICIANDO OPERAÇÃO DE DEPOSITO ========')
+     print('\n')
+     try:
+        valor_deposito = float(input(f'Olá usuario. Informe um valor para Deposito: '))
+        print('\n')
+        if valor_deposito <= 0:
+               print('Valor invalido para Deposito!')
+        else: 
+               if verif_senhas(conta_usuario) == True :
+                    novo_saldo = saldo_atual + valor_deposito
+                    usuarios[conta_usuario]['saldo'] = novo_saldo
+                    print (f'Deposito de R${valor_deposito:.0f}, Realizado com Sucesso!')
+                    print ('Aperte enter para ir ao MENU PRINCIPAL')
+                    reg_historico(conta_usuario, f'Deposito de R${valor_deposito:.0f} Realizado com sucesso')
+                    return novo_saldo
+               else:
+                    print('\n')
+                    print('Operação cancelada. \n Nenhuma alteração foi realizada em sua conta.')
+                    print('Aperte enter para ir ao menu inicial')
+     except ValueError:
+            print( '\n')
+            print('========= DIGITE APENAS NUMEROS =========')
+            print('Tecle enter para voltar ao menu inicial')
+def saque(conta_usuario):
+    saldo_disponivel = usuarios[conta_usuario]['saldo']
+    tentativas = 3
+    print('======== INICIANDO OPERAÇÃO DE SAQUE ========')
+    print('\n')
+    try:
+                valor_saque = float(input(f'Olá, xxxxx. Informe um valor para Saque: '))
+                print('\n')
+                print('\n')
+                if valor_saque <= 0:
+                    print('Valor informado inválido.\nOperação cancelada por segurança.')
+                elif valor_saque > saldo_disponivel:
+                    print('Saldo insuficiente para concluir a operação.')
+                else:
+                    if verif_senhas(conta_usuario):
+                        novo_saldo = saldo_disponivel - valor_saque
+                        print(f'Saque de R${valor_saque:.0f} Realizado com Sucesso!')
+                        print('Aperte enter para ir ao MENU PRINCIPAL')
+                        reg_historico(conta_usuario, f'Saque de R${valor_saque:.0f} Realizado com Sucesso')
+                        return novo_saldo
+                    else:
+                        print('\n')
+                        print('Operação cancelada.\nNenhuma alteração foi realizada em sua conta.')
+                        print('Aperte enter para ir ao MENU PRINCIPAL ')
+    except ValueError:
+                print('\n')
+                print('========= DIGITE APENAS NUMEROS =========')
+                print('Tecle enter para voltar ao menu inicial')  
+    return saldo_disponivel           
+def verif_senhas(conta_usuario):
+    senha_correta = usuarios[conta_usuario]['senha']
+    tentativas = 3
+    #ALTERAR CAMPO SENHA E TEXTOS PRINTS CONFORME NECESSIDADE
+    while tentativas > 0:
+        senha = input('============= CONFIRMAÇÃO DE SEGURANÇA NECESSÁRIA =============.\n\nDigite sua senha: ')
+        if  senha_correta == senha:
+            print('\nIdentidade confirmada.\nOperação autorizada.')
+            return True
+        else:
+            tentativas -= 1
+            print('\n')
+
+            print(f'Credencial incorreta.\nTentativas restantes: {tentativas}.')
+            
+    # BLOQUEIO
+    if tentativas == 0:
+        print('Operação bloqueada por segurança.')
+        print('\n')
+        return False    
+def login():
+    numeros = historico
+    tentativas = 3
+    while tentativas > 0:
+        conta = input('Identificação VÉRTICE — ' \
+        'Conta: ')
+        senha = input('Senha de Acesso: ')
+
+        if conta in usuarios:
+            dados_usuario = usuarios[conta]
+            print('\n===============================')
+            print(f'        Acesso autorizado.')
+            print(f' Bem-vindo à VÉRTICE, {dados_usuario['nome']}')
+            print('===============================')
+            return conta
+        else:
+            tentativas -= 1
+            print('\n')
+            print('\n===============================')
+            print(f'    Credenciais inválidas.')
+            print(f'Tentativas restantes: {tentativas}.')
+            print('===============================')
+
+    # BLOQUEIO
+    if tentativas == 0:
+        print('Acesso temporariamente bloqueado por segurança.\nEntre em contato com a VÉRTICE.')
+        print('\n===============================')
+        return False    
+def menu(conta_usuario):
+    saldo_atual = usuarios[conta_usuario]['saldo']
+    while True:
+        print('\n===============================')
+        print('[1] - CONSULTAR SALDO')
+        print('[2] - SAQUE RÁPIDO VÉRTICE')
+        print('[3] - DEPOSITO')
+        print('[4] - EXTRATO FINANCEIRO')
+        print('[5] - ENCERRAR SESSÃO')
+        print('===============================')
+        print('\n')
+        opcao_user = input(f'     ...., Digite Opção Desejada: ')
+        print('\n')
+#OPÇÃO 1
+        if opcao_user == '1':
+            print('  ======= SALDO =======  ')
+            print(f'    SALDO DISPONIVEL: R${saldo_atual:.0f}.')
+            print('  =====================  ')
+            print('\n')
+            input('Pressione ENTER para voltar ao menu')
+#OPÇÃO 2
+        elif opcao_user == '2':
+             saldo_atual = saque(conta_usuario)
+             usuarios[conta_usuario]['saldo'] = saldo_atual 
+
+        elif opcao_user == '3':
+             saldo_atual = deposito(conta_usuario)
+             usuarios[conta_usuario]['saldo'] = saldo_atual 
+#opção 4
+        elif opcao_user == '4':
+             extrato(conta_usuario)
+
+        elif opcao_user == '5':
+            print('===========================')
+            print('Sessão encerrada com segurança.\nVÉRTICE agradece a sua confiança.')
+            print('============================')
+            print('\n')
+            break
+
+        else:
+            print('Opção inválida.')
+            input('Pressione ENTER para voltar ao menu')
+# ABERTURA
+print('\n===============================')
+print('            VÉRTICE            ')
+print('===============================')
+print(f'Olá,')
+print('Sua sessão foi iniciada com segurança.')
+print('Tudo converge para o seu controle.')
+print('================================')
+#START PROGRAMA
+ch_login = login()
+if ch_login:
+    menu(ch_login)
+else:
+    False
